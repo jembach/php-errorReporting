@@ -1,0 +1,23 @@
+{
+	"name": "jembach/php-errorReporting",
+	"description": "Error reporting class for PHP to cach errors",
+  "type": "library",
+  "keywords": [
+    "error",
+    "reporting"
+  ],
+  "license": "GPL-3.0",
+  "version": "1.0",
+  "authors": [
+        {
+            "name": "Jonas Embach",
+            "role": "Developer"
+        }
+    ],
+	"require": {
+		"php": ">=5.3.0"
+	},
+	"autoload": {
+		"files": ["error.reporting.class.php"]
+	}
+}
