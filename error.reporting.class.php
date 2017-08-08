@@ -13,6 +13,25 @@
 class errorHandler {
 
 	protected static $errors=array();	//Holds all error
+	protected static $callback=NULL;	//The callback paramters
+	protected static $errorCount=0;		//The error counter for the errors array
+	
+	/**
+	 * Sets the output function.
+	 * @param      callback  $callback  The callback
+	 */
+	public static function setOutputFunction($callback){
+		self::$callback=$callback;
+	}
+
+	/**
+	 * prints an error if an callback is set
+	 * @param      integer  $key    The key of the error in the $errors array
+	 */
+	public static function out($key){
+		if(self::$callback!==NULL)
+			call_user_func(self::$callback,self::$errors[$key]);
+	}
 
 	/**
 	 * Sets the error hanlder.
@@ -30,7 +49,9 @@ class errorHandler {
 	 * @param      integer  $line     The line
 	 */
 	public static function addError($type,$message,$file,$line){
-		self::$errors[]=array("type"=>$type,"message"=>$message,"file"=>$file,"line"=>$line);
+		self::$errors[self::$errorCount]=array("type"=>$type,"message"=>$message,"file"=>$file,"line"=>$line);
+		self::out(self::$errorCount);
+		self::$errorCount++;
 	}
 
 	/**
@@ -41,7 +62,9 @@ class errorHandler {
 	 * @param      integer  $line     The line
 	 */
 	public static function addException(Exception $ex){
-		self::$errors[]=array("type"=>E_USER_ERROR,"message"=>$ex->getMessage(),"file"=>$ex->getFile(),"line"=>$ex->getLine(),"trace"=>$ex->getTrace());
+		self::$errors[self::$errorCount]=array("type"=>E_USER_ERROR,"message"=>$ex->getMessage(),"file"=>$ex->getFile(),"line"=>$ex->getLine(),"trace"=>$ex->getTrace());
+		self::out(self::$errorCount);
+		self::$errorCount++;
 	}
 
 	/**
@@ -65,9 +88,8 @@ class errorHandler {
 	}
 }
 
-errorHandler::setErrorHanlder(E_ALL);
 set_error_handler(array("errorHandler","addError"));
-set_exception_handler(array("errorHandler","addException"))
+set_exception_handler(array("errorHandler","addException"));
 
 
 ?>
