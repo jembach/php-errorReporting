@@ -88,6 +88,7 @@ class errorHandler {
 	}
 }
 
+//sets the exception and error handler on the error reporting class
 set_error_handler(array("errorHandler","addError"));
 set_exception_handler(array("errorHandler","addException"));
 
