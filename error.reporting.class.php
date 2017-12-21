@@ -15,6 +15,7 @@ class errorHandler {
 	protected static $errors=array();	//Holds all error
 	protected static $callback=NULL;	//The callback paramters
 	protected static $errorCount=0;		//The error counter for the errors array
+	protected static $developMode=false;		//The error counter for the errors array
 	
 	/**
 	 * Sets the output function.
@@ -31,6 +32,9 @@ class errorHandler {
 	public static function out($key){
 		if(self::$callback!==NULL)
 			call_user_func(self::$callback,self::$errors[$key]);
+		if(self::$developMode==true){
+			var_dump(self::$errors[$key]['message'].",".self::$errors[$key]['line']);
+		}
 	}
 
 	/**
@@ -39,6 +43,13 @@ class errorHandler {
 	 */
 	public static function setErrorHanlder($level){
 		error_reporting($level);
+	}
+
+	/**
+	 * Sets the developement mode to true
+	 */
+	public static function setDevelopMode(){
+		self::$developMode=true;
 	}
 
 	/**
@@ -61,7 +72,7 @@ class errorHandler {
 	 * @param      string   $file     The file
 	 * @param      integer  $line     The line
 	 */
-	public static function addException(Exception $ex){
+	public static function addException(Throwable $ex){
 		self::$errors[self::$errorCount]=array("type"=>E_USER_ERROR,"message"=>$ex->getMessage(),"file"=>$ex->getFile(),"line"=>$ex->getLine(),"trace"=>$ex->getTrace());
 		self::out(self::$errorCount);
 		self::$errorCount++;
@@ -88,9 +99,7 @@ class errorHandler {
 	}
 }
 
-//sets the exception and error handler on the error reporting class
 set_error_handler(array("errorHandler","addError"));
 set_exception_handler(array("errorHandler","addException"));
-
 
 ?>
